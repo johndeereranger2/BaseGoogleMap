@@ -5,7 +5,7 @@ import androidx.core.net.toUri
 import com.google.android.gms.maps.model.LatLng
 
 class ParcelDataManager {
-    val token = "ozEw4rZCd9"
+    val token = "ozEw4rZCd9" //dont share
     val base =
         "https://reportallusa.com/api/parcels.php?client=ozEw4rZCd9&v=4&rpp=1&spatial_nearest=POINT({long}%20{lat})&sn_srid=4326"
 
