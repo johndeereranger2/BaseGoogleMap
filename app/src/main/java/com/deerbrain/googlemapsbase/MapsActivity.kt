@@ -31,6 +31,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapCli
     var casheTileLayerShown: Boolean = false
     var parcelTileLayerShown: Boolean = false
     var mapCacheTileOverlay: TileOverlay? = null
+    var groundOverlay: GroundOverlay? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,7 +125,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapCli
 
     fun handleShowHeatMap(){
         if (heatMapShown){
-            //hide HeatMap
+           groundOverlay.remove()
+            heatMapShown = false
         } else {
             showHeatMap()
         }
@@ -158,14 +160,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapCli
             }
         }
 
+        /
         val southWestCorner = LatLng((minLat - 0.000463), (minLong - 0.000463))
         val northEastCorner = LatLng((maxLat + 0.000463), (maxLat - 0.000463))
-
+        val displayBounds = LatLngBounds(southWestCorner,northEastCorner)
+        
+        //https://developers.google.com/maps/documentation/android-sdk/groundoverlay#maps_android_ground_overlays_add-kotlin
+        //https://github.com/googlemaps/android-samples/blob/master/ApiDemos/kotlin/app/src/gms/java/com/example/kotlindemos/GroundOverlayDemoActivity.kt
+        
+        val heatMapOverlay = GroundOverlayOptions().image(newImage).positionFromBounds(displayBounds)
+        groundOverlay = map.addGroundOverlay(heatMapOverlay)
+        
+        /*
+        groundOverlay = map.addGroundOverlay(
+            GroundOverlayOptions()
+                .image(images[1].anchor(0f,1f)
+                .position(Near_Newark, 4300f, 3025f)
         val overlayBounds= GMSCoordinateBounds(coordinate: southWestCorner, coordinate: northEastCorner)
         val overlay = GMSOverlay(bounds: overlayBounds, icon: newImage)
         overlay.opacity = 0.5
         overlay.bearing = 0
         mMap.addGroundOverlay(overlay)
+        */
     }
 
     val heatMapimageURL: URL?
@@ -191,6 +207,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapCli
                 countNumber = countNumber + 1
                 val location = latLng(z,y)
                 val inAreaorOut = GMSGemometryContainsLocation(z,y,polyPath,true) //iOS code
+                
+                var point = new google.maps.LatLng(33.619003, -83.867405)// kotlin Code
+                val inOrOut = polyPath.Contains(point)
 
 
 //            let newMarkerLocation = MarkerLocation.self()
