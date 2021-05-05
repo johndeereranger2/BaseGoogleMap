@@ -176,5 +176,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapCli
         heatMapimageURL = imageURL
     }
 
+    fun createArrayOfMarkers(){
+        val longPts = Int(((abs(maxAreaLong - minAreaLong))/0.00092667).rounded(.awayFromZero))
+        val latPts = latPts = Int(((abs(maxAreaLat - minAreaLat))/0.00092667).rounded(.awayFromZero))
+        var countNumber = 0
+
+        for (longIncriment in 1 ...longPts) {
+            //realm.beginWrite()
+
+
+            for (latInc in 1 ... latPts) {
+                val adder = (Double(n -1) * 0.00092667)
+                val zAdder = baseLat - adder
+                countNumber = countNumber + 1
+                val location = latLng(z,y)
+                val inAreaorOut = GMSGemometryContainsLocation(z,y,polyPath,true) //iOS code
+
+
+//            let newMarkerLocation = MarkerLocation.self()
+//            newMarkerLocation.dateCreated = Date()
+//            newMarkerLocation.counter = backIncrementID()
+//            newMarkerLocation.row = n
+//            newMarkerLocation.col = longinc
+//            newMarkerLocation.markerType = 1
+//            newMarkerLocation.UiD = UiD
+//            newMarkerLocation.pictype = ""
+//            newMarkerLocation.insidePoly = inOrOut
+//
+//
+//            if let currentMap = self.selectedMap(in: realm) {
+//            newMarkerLocation.thelat = Double(z)
+//            newMarkerLocation.thelong = Double(y)
+//            currentMap.theMarkerLocation.append(newMarkerLocation)
+        }
+            try! realm.commitWrite()
+        }
+        }
+    }
+
 
 }

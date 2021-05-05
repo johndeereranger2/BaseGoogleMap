@@ -1,5 +1,7 @@
 package com.deerbrain.googlemapsbase.HeatMaps
 
+import com.google.android.gms.maps.model.LatLng
+
 class MarkerLocationRealmManager {
 
 
@@ -21,5 +23,9 @@ class MarkerLocationRealmManager {
 
     fun maxDistance(mapName: MapName) : Double {
         return mapName.theMarkerLocation.max(ofProperty: "distancenearMarker") as Double?
+    }
+
+    fun writeTheMarkerToRealm(latLng: LatLng, countID: Int, row: Int, col:Int){
+
     }
 }
