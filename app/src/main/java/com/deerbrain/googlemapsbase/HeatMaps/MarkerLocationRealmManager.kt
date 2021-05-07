@@ -23,16 +23,38 @@ class MarkerLocationRealmManager {
         return mapName.theMarkerLocation.filter("row == %@ x and col == %@" , y + 1, x + 1).first
     }
 
-    fun northWestMarker(x: Int, y: Int, mapName: MapNames) : MarkerLocation? {
+//     fun northWestMarker(x: Int, y: Int, mapName: MapNames) : MarkerLocation? {
 
-     //   val map = RealmWrapper.realm.objects<MapNames>()
-        //return mapName.theMarkerLocation.filter("row == %@ x and col == %@" , y + 1, x).first
-    //return RealmWrapper.realm.where(MapNames::class.java).equalTo("row",x).findFirst()
+//      //   val map = RealmWrapper.realm.objects<MapNames>()
+//         //return mapName.theMarkerLocation.filter("row == %@ x and col == %@" , y + 1, x).first
+//     //return RealmWrapper.realm.where(MapNames::class.java).equalTo("row",x).findFirst()
         
+//         return RealmWrapper.realm.where(MapNames::class.java)
+//             .equalTo("theMarkerLocation.row",x)
+//             .equalTo("theMarkerLocation.col", y +1 )
+//             .findFirst()
+//     }
+    
+       fun northWestMarker(x: Int, y: Int, mapName: MapNames) : Double {
+
+        var distanceToNearestMarker = 0.0
         return RealmWrapper.realm.where(MapNames::class.java)
             .equalTo("theMarkerLocation.row",x)
             .equalTo("theMarkerLocation.col", y +1 )
             .findFirst()
+        
+        val marker = RealmWrapper.realm.where(MapNames::class.java)
+            .equalTo("theMarkerLocation.row",x)
+            .equalTo("theMarkerLocation.col", y +1 )
+            .findFirst()
+        
+        marker?.forEach{
+            it.theMarkerLocation.forEach{
+                distanceToNearestMarker = it.distanceNearMarker   
+            }
+        }
+        return distanceToNearestMarker
+        
     }
 
     fun maxDistance(mapName: MapNames) : Double? {
