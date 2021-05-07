@@ -35,6 +35,8 @@ class MarkerLocationRealmManager {
 //             .findFirst()
 //     }
     
+    
+    //https://stackoverflow.com/questions/49483520/how-to-use-linkingobject-for-android
        fun northWestMarker(x: Int, y: Int, mapName: MapNames) : Double {
 
         var distanceToNearestMarker = 0.0
