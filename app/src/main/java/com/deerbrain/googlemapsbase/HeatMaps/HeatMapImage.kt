@@ -64,17 +64,19 @@ class HeatMapImage {
         //contact me with the issue
         val mgr = MarkerLocationRealmManager()
         val maxDistance = mgr.maxDistance(mapName)
-        val southWestMarker = mgr.southWestMarker(X, Y, mapName)
-        val southEastMarker = mgr.southEastMarker(X, Y, mapName)
-        val northWestMarker = mgr.northWestMarker(X, Y, mapName)
-        val northEastMarker = mgr.northEastMarker(X, Y, mapName)
+        val southwestValue = mgr.southWestMarker(X, Y, mapName)
+        val southeastValue = mgr.southEastMarker(X, Y, mapName)
+        val northwestValue = mgr.northWestMarker(X, Y, mapName)
+        val northeastValue = mgr.northEastMarker(X, Y, mapName)
 
-        val southeastValue = southEastMarker.distanceNearMarker
-        val southwestValue = southWestMarker.distanceNearMarker
-        val northeastValue = northEastMarker.distanceNearMarker
-        val northwestValue = northWestMarker.distanceNearMarker
+//        val southeastValue = southEastMarker.distanceNearMarker
+//        val southwestValue = southWestMarker.distanceNearMarker
+//        val northeastValue = northEastMarker.distanceNearMarker
+//        val northwestValue = northWestMarker.distanceNearMarker
 
-        val weightedValue = ((southeastValue! + southwestValue! + northeastValue! + northwestValue!)/4.0 )/((maxDistance!*0.9)/10.0)
+
+        val weightedValue =
+            ((southeastValue + southwestValue + northeastValue + northwestValue) / 4.0) / ((maxDistance * 0.9) / 10.0)
 
 
         return weightedValue
