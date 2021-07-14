@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'  //added from Realm sample
+    id 'realm-android' //added from realm sample
 }
 
 android {
