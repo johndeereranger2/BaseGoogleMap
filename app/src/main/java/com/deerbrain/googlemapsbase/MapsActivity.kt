@@ -37,6 +37,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapCli
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         mMap.setOnMapClickListener(this)
     }
+    //4545
 
     override fun onMapClick(coordinate: LatLng?) {
         Log.i("MapClick", "$coordinate")
