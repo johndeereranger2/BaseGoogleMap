@@ -1,9 +1,12 @@
 package com.deerbrain.googlemapsbase
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.deerbrain.googlemapsbase.HeatMaps.HeatMapImage
+import android.view.View
+import android.widget.Toast
+import com.deerbrain.googlemapsbase.HeatMaps.*
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -11,23 +14,31 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.TileOverlay
-import com.google.android.gms.maps.model.TileOverlayOptions
-import java.net.URL
+import java.util.*
+import kotlin.collections.ArrayList
 
 enum class ActualSystemState { initial, mapTiles, parcelTiles, parcelData }
 
+private const val TAG = "MapsActivity"
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapClickListener{
+
+companion object {
+    lateinit var context: Context
+}
 
     lateinit var mMap: GoogleMap
     var heatMapShown: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context = applicationContext
         setContentView(R.layout.activity_maps)
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+
     }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -37,103 +48,78 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMapCli
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         mMap.setOnMapClickListener(this)
     }
-    //4545
 
     override fun onMapClick(coordinate: LatLng?) {
         Log.i("MapClick", "$coordinate")
     }
 
-    fun handleShowHeatMap(){// set up a button that calls this
-        if (heatMapShown){
-            //hide HeatMap
-        } else {
-            //showHeatMap()
-        }
+    fun runBackgroundPressed(view: View){
+        Log.d(TAG, "runBackgroundPressed: ")
+        Toast.makeText(this,"Pressed",Toast.LENGTH_LONG).show()
+
+       //TODO: make this be able to run on a background thread
+
+        Log.d(TAG, "runBackgroundPressed: start time ${Date()}")
+        HeatMapRealmManager.createArrayOfMarkers(false)
+    //    calcNearestRoad()
+
     }
 
-//    fun showHeatMap(){
-//        var newImage = Image?
-//        val maxLat = markers.max(ofProperty: "theLat") as Double?
-//        val maxLong = marker.max(ofProperty: "thLong") as Double?
-//        val minLat = marker.max(ofProperty: "theLat") as Double?
-//        val minLong = marker.max(ofProperty: "thelong") as Double?
-//
-//        val countRow = marker.max(ofProperty: "row") as Int?
-//        val countCol = marker.max(ofProperty: "col") as Int?
-//
-//        if (countRow > 2){
-//            if (countCol > 2) {
-//                val imageHeight = countRow - 1
-//                val imageWidth  = countCol - 1
-//
-//                newImage = getImageFromURL(heatMapimageURL)
-//
-//                val imageSize = CGSize(width: imageWidth, height: imageHeight)
-//
-//                if (newImage == null){
-//                    newImage = HeatMapImage().createWeightedValue(imageSize, mapName = selectedMap)
-//
-//                    storeImageAtURL(heatMapimageURL)
-//                }
-//
-//            }
-//        }
-//
-//        val southWestCorner = LatLng((minLat - 0.000463), (minLong - 0.000463))
-//        val northEastCorner = LatLng((maxLat + 0.000463), (maxLat - 0.000463))
-//
-//        val overlayBounds= GMSCoordinateBounds(coordinate: southWestCorner, coordinate: northEastCorner)
-//        val overlay = GMSOverlay(bounds: overlayBounds, icon: newImage)
-//        overlay.opacity = 0.5
-//        overlay.bearing = 0
-//        mMap.addGroundOverlay(overlay)
-//    }
-//
-//    val heatMapimageURL: URL?
-//
-//    fun setHeatMapImageURL(){
-//        val imageName = "$UID" + ".png"
-//        val imageURL = URL( temporarydirectory.appendingPathWithComponent(imageName))
-//        heatMapimageURL = imageURL
-//    }
-//
-//    fun createArrayOfMarkers(){
-//        val longPts = Int(((abs(maxAreaLong - minAreaLong))/0.00092667).rounded(.awayFromZero))
-//        val latPts = latPts = Int(((abs(maxAreaLat - minAreaLat))/0.00092667).rounded(.awayFromZero))
-//        var countNumber = 0
-//
-//        for (longIncriment in 1 ...longPts) {
-//            //realm.beginWrite()
-//
-//
-//            for (latInc in 1 ... latPts) {
-//                val adder = (Double(n -1) * 0.00092667)
-//                val zAdder = baseLat - adder
-//                countNumber = countNumber + 1
-//                val location = latLng(z,y)
-//                val inAreaorOut = GMSGemometryContainsLocation(z,y,polyPath,true) //iOS code
-//
-//
-////            let newMarkerLocation = MarkerLocation.self()
-////            newMarkerLocation.dateCreated = Date()
-////            newMarkerLocation.counter = backIncrementID()
-////            newMarkerLocation.row = n
-////            newMarkerLocation.col = longinc
-////            newMarkerLocation.markerType = 1
-////            newMarkerLocation.UiD = UiD
-////            newMarkerLocation.pictype = ""
-////            newMarkerLocation.insidePoly = inOrOut
-////
-////
-////            if let currentMap = self.selectedMap(in: realm) {
-////            newMarkerLocation.thelat = Double(z)
-////            newMarkerLocation.thelong = Double(y)
-////            currentMap.theMarkerLocation.append(newMarkerLocation)
-//        }
-//            try! realm.commitWrite()
-//        }
-//        }
-//    }
+
+    fun calcNearestRoad() {
+        val uid= "temp"
+        val allMarkers = HeatMapRealmManager.getHeatMapMarkersForUID(uid)
+        val roadMarkers = MarkerLocationRealmManager.getRoadMarkers(uid)
+
+        var emptyDoubles = ArrayList<Double>()
+        val cache = RoadMarkerCache()
+        val accessCache = RoadMarkerCache()
+
+        accessCache.loadmarkers(roadMarkers)
+        cache.loadTreeStand()
+
+        for (aMarkers in allMarkers) {
+            val latOfMarker = aMarkers.theLat
+            val longOfMarker = aMarkers.theLong
+            emptyDoubles = ArrayList<Double>()
+            emptyDoubles.add(89000.0)
+            var closestMarker = emptyDoubles.min()
+
+            for (cached in accessCache.markers) {
+                val d = Utilities.haversineDistance(
+                    latOfMarker,
+                    longOfMarker,
+                    cached.latitude,
+                    cached.longitude
+                )
+                if (d < closestMarker!!) {
+                    emptyDoubles.add(d)
+                }
+            }
+
+
+
+            for (stand in cache.markers) {
+                val latRoad = stand.latitude
+                val longRoad = stand.longitude
+                val d = Utilities.haversineDistance(latOfMarker, longOfMarker, latRoad, longRoad)
+                if (d < closestMarker!!) {
+                    emptyDoubles.add(d)
+                }
+            }
+
+            closestMarker = emptyDoubles.min()
+            var returnValue: Double = closestMarker!!
+            if (closestMarker == null) {
+                returnValue = 890000.0
+            }
+            //			//writeRealmClosestMarker(distance: closestMarker!, cID: aMarkers.counter) <worked
+            MarkerLocationRealmManager.writeClosestMarker(aMarkers.id, returnValue)
+        }
+        Log.d(TAG, "calcNearestRoad: FINISHED")
+    }
+
+
 
 
 }

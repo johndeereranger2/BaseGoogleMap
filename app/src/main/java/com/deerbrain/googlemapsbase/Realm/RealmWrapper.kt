@@ -15,17 +15,12 @@ object RealmWrapper {
 
             if (iRealm == null) {
 
-                RealmManager.initalize(App.context)
+                RealmManager.initalize(MapsActivity.context)
 
                 iRealm = RealmManager.getRealm("myRealm", 4) { schema, version ->
 
                     if (version == 4L) return@getRealm
-
-                    val dish = schema.get("Dish") ?: schema.create("Dish")
-
-                    dish.addField("id", Int::class.java, FieldAttribute.PRIMARY_KEY)
-                        .addField("name", String::class.java, FieldAttribute.REQUIRED)
-                        .addField("price", Float::class.java)
+                    
                 }
             }
 

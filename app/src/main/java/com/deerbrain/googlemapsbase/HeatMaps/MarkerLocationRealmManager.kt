@@ -11,6 +11,10 @@ private const val TAG = "MarkerLocationManager"
 
 object MarkerLocationRealmManager {
 
+    fun incrementID() : Int {
+        return (RealmWrapper.realm.where(MarkerLocation::class.java).max("id")?.toInt() ?: 0) + 1
+    }
+
     fun writeClosestMarker(id: Int, distance: Double){
         val marker = RealmWrapper.realm.where(MarkerLocation::class.java).equalTo("id", id).findFirst()
         RealmWrapper.realm.executeTransaction {
