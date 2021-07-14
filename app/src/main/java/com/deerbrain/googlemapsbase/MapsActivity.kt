@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import io.realm.Realm
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -58,10 +59,16 @@ companion object {
         Toast.makeText(this,"Pressed",Toast.LENGTH_LONG).show()
 
        //TODO: make this be able to run on a background thread
-
         Log.d(TAG, "runBackgroundPressed: start time ${Date()}")
+
+        val blocker = ActivityBlocker(this)
+        blocker.showWithText("Loading")
         HeatMapRealmManager.createArrayOfMarkers(true)
         calcNearestRoad()
+        blocker.remove()
+
+
+
 
     }
 
