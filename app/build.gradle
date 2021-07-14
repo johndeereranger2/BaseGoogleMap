@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'  //added from Realm sample
     id 'realm-android' //added from realm sample
 }
+apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 30
