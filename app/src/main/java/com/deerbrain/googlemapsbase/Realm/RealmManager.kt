@@ -24,8 +24,17 @@ object RealmManager {
                 .schemaVersion(version)
                 .allowQueriesOnUiThread(true)
                 .allowWritesOnUiThread(true)
-                .migration { realm, oldVersion, _ -> schema(realm.schema, oldVersion) }
+                .migration(MyMigration())
                 .build())
+
+    fun getConfig(name: String, version: Long, schema: (RealmSchema, Long) -> Unit) =
+            RealmConfiguration.Builder()
+                .name(name)
+                .schemaVersion(version)
+                .allowQueriesOnUiThread(true)
+                .allowWritesOnUiThread(true)
+                .migration { realm, oldVersion, _ -> schema(realm.schema, oldVersion) }
+                .build()
 
     fun create(realm: Realm, model: RealmObject) {
 

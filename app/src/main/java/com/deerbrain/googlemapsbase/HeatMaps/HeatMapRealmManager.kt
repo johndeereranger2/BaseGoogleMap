@@ -1,14 +1,16 @@
 package com.deerbrain.googlemapsbase.HeatMaps
 
 import android.util.Log
+import com.deerbrain.googlemapsbase.MapsActivity
 
 import com.deerbrain.googlemapsbase.Realm.MarkerLocation
+import com.deerbrain.googlemapsbase.Realm.RealmManager
 import com.deerbrain.googlemapsbase.Realm.RealmWrapper
 import com.google.android.gms.maps.model.LatLng
+import io.realm.Realm
 
 import io.realm.RealmList
 import io.realm.RealmResults
-import io.realm.kotlin.where
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
@@ -74,8 +76,8 @@ object HeatMapRealmManager {
         maxAreaLat = 34.001
     }
 
-    fun incrementID() : Int {
-        return (RealmWrapper.realm.where(MarkerLocation::class.java).max("id")?.toInt() ?: 0) + 1
+    fun incrementID(backgroundThreadRealm: Realm): Int {
+        return (backgroundThreadRealm.where(MarkerLocation::class.java).max("id")?.toInt() ?: 0) + 1
     }
     fun createArrayOfMarkers(isBig: Boolean){
         if(isBig) {
@@ -84,12 +86,21 @@ object HeatMapRealmManager {
             setSmallArea()
         }
 
+        Realm.init(MapsActivity.context)
+        val config = RealmManager.getRealm("myRealm", 4) { schema, version ->
+            if (version == 4L) return@getRealm
+        }.configuration
+
+        Thread{
+            val backgroundThreadRealm : Realm = Realm.getInstance(config)
+
+
         val longPoints = ((abs(maxAreaLong - minAreaLong))/0.000926667).roundToInt()
         val latPoints = ((abs(maxAreaLat - minAreaLat))/0.000926667).roundToInt()
         var propUID = DBConstants.getPropertyUID()
 
         //RealmWrapper.realm.beginTransaction()
-        var baseID = incrementID() + 1
+        var baseID = incrementID(backgroundThreadRealm) + 1
         var arrayToAdd = ArrayList<MarkerLocation>()
         for (longInc in 1 .. longPoints){
             //Log.d(TAG, "createArrayOfMarkers: longInc: $longInc propUID: $propUID")
@@ -124,13 +135,14 @@ object HeatMapRealmManager {
         }
         Log.d(TAG, "createArray: Finish 1st loop Time ${Date()}")
         for (item in arrayToAdd) {
-            RealmWrapper.realm.executeTransaction {
+            backgroundThreadRealm.executeTransaction {
                 it.insert(item)
                 //Log.d(TAG, "createArrayOfMarkers: ${item.id}")
   
             }
         }
         Log.d(TAG, "createArray: Finish writing Time ${Date()}")
+        }.start()
     }
 
 

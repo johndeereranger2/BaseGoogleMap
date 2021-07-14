@@ -1,9 +1,6 @@
 package com.deerbrain.googlemapsbase.Realm
 
-import com.deerbrain.googlemapsbase.App
-import com.deerbrain.googlemapsbase.App.Companion.context
 import com.deerbrain.googlemapsbase.MapsActivity
-import io.realm.FieldAttribute
 import io.realm.Realm
 
 object RealmWrapper {
@@ -26,4 +23,5 @@ object RealmWrapper {
 
             return iRealm!!
         }
+
 }
