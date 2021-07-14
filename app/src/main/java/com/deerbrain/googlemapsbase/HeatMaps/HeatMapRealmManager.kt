@@ -78,6 +78,7 @@ object HeatMapRealmManager {
         return (RealmWrapper.realm.where(MarkerLocation::class.java).max("id")?.toInt() ?: 0) + 1
     }
     fun createArrayOfMarkers(isBig: Boolean){
+
         if(isBig) {
             setAreaMinMax()
         } else {
@@ -127,10 +128,12 @@ object HeatMapRealmManager {
             RealmWrapper.realm.executeTransaction {
                 it.insert(item)
                 //Log.d(TAG, "createArrayOfMarkers: ${item.id}")
-  
+
             }
         }
         Log.d(TAG, "createArray: Finish writing Time ${Date()}")
+
+
     }
 
 

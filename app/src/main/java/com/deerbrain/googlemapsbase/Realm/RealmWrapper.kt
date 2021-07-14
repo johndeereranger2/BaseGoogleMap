@@ -18,10 +18,9 @@ object RealmWrapper {
                 RealmManager.initalize(MapsActivity.context)
 
                 iRealm = RealmManager.getRealm("myRealm", 4) { schema, version ->
-
                     if (version == 4L) return@getRealm
-                    
                 }
+
             }
 
             return iRealm!!
