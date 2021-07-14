@@ -122,7 +122,7 @@ object HeatMapRealmManager {
             }
 
         }
-        Log.d(TAG, "createArrayOfMarkers: Finished 1st Itteration Time ${Date()}")
+        Log.d(TAG, "createArray: Finish 1st loop Time ${Date()}")
         for (item in arrayToAdd) {
             RealmWrapper.realm.executeTransaction {
                 it.insert(item)
@@ -130,7 +130,7 @@ object HeatMapRealmManager {
   
             }
         }
-        Log.d(TAG, "createArrayOfMarkers: Finished writing Itteration Time ${Date()}")
+        Log.d(TAG, "createArray: Finish writing Time ${Date()}")
     }
 
 

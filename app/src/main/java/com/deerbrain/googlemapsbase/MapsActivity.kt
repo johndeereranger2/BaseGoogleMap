@@ -60,13 +60,14 @@ companion object {
        //TODO: make this be able to run on a background thread
 
         Log.d(TAG, "runBackgroundPressed: start time ${Date()}")
-        HeatMapRealmManager.createArrayOfMarkers(false)
-    //    calcNearestRoad()
+        HeatMapRealmManager.createArrayOfMarkers(true)
+        calcNearestRoad()
 
     }
 
 
     fun calcNearestRoad() {
+        Log.d(TAG, "calcNear: start time ${Date()}")
         val uid= "temp"
         val allMarkers = HeatMapRealmManager.getHeatMapMarkersForUID(uid)
         val roadMarkers = MarkerLocationRealmManager.getRoadMarkers(uid)
@@ -116,7 +117,7 @@ companion object {
             //			//writeRealmClosestMarker(distance: closestMarker!, cID: aMarkers.counter) <worked
             MarkerLocationRealmManager.writeClosestMarker(aMarkers.id, returnValue)
         }
-        Log.d(TAG, "calcNearestRoad: FINISHED")
+        Log.d(TAG, "calcNearestRoad: FINISHED time ${Date()}" )
     }
 
 
