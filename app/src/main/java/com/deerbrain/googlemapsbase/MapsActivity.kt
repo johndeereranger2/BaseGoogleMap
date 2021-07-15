@@ -15,6 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import io.realm.Realm
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -62,10 +63,23 @@ companion object {
         Log.d(TAG, "runBackgroundPressed: start time ${Date()}")
 
         val blocker = ActivityBlocker(this)
-        blocker.showWithText("Loading")
-        HeatMapRealmManager.createArrayOfMarkers(true)
-        calcNearestRoad()
-        blocker.remove()
+
+        runBlocking {
+
+            val job1: Job = launch(context = Dispatchers.Default) {
+                HeatMapRealmManager.createArrayOfMarkers(true)
+            }
+
+            val job2: Job = launch(context = Dispatchers.Main) {
+                blocker.showWithText("Loading")
+                Log.d(TAG, "runBackgroundPressed: ActivityBlockedPlaced")
+            }
+            joinAll(job1, job2)
+            calcNearestRoad()
+            blocker.remove()
+            Log.d(TAG, "runBackgroundPressed: ActivityBlockedRemoved")
+        }
+
 
 
 

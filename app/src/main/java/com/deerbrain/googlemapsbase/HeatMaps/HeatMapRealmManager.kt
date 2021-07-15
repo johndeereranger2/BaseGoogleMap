@@ -79,7 +79,8 @@ object HeatMapRealmManager {
     fun incrementID(backgroundThreadRealm: Realm): Int {
         return (backgroundThreadRealm.where(MarkerLocation::class.java).max("id")?.toInt() ?: 0) + 1
     }
-    fun createArrayOfMarkers(isBig: Boolean){
+
+    suspend fun createArrayOfMarkers(isBig: Boolean){
         if(isBig) {
             setAreaMinMax()
         } else {
