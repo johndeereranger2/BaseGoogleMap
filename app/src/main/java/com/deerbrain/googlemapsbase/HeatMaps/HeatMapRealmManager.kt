@@ -79,7 +79,8 @@ object HeatMapRealmManager {
     fun incrementID(backgroundThreadRealm: Realm): Int {
         return (backgroundThreadRealm.where(MarkerLocation::class.java).max("id")?.toInt() ?: 0) + 1
     }
-    fun createArrayOfMarkers(isBig: Boolean){
+
+    suspend fun createArrayOfMarkers(isBig: Boolean){
         if(isBig) {
             setAreaMinMax()
         } else {
@@ -91,8 +92,8 @@ object HeatMapRealmManager {
             if (version == 4L) return@getRealm
         }.configuration
 
-        Thread{
-            val backgroundThreadRealm : Realm = Realm.getInstance(config)
+
+        val backgroundThreadRealm : Realm = Realm.getInstance(config)
 
 
         val longPoints = ((abs(maxAreaLong - minAreaLong))/0.000926667).roundToInt()
@@ -142,7 +143,6 @@ object HeatMapRealmManager {
             }
         }
         Log.d(TAG, "createArray: Finish writing Time ${Date()}")
-        }.start()
     }
 
 
