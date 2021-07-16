@@ -64,26 +64,20 @@ companion object {
 
         val blocker = ActivityBlocker(this)
 
-        runBlocking {
 
-            val job1: Job = launch(context = Dispatchers.Default) {
-                HeatMapRealmManager.createArrayOfMarkers(true)
+        CoroutineScope(Dispatchers.Main).launch {
+            blocker.showWithText("Loading")
+
+            var task = async(Dispatchers.IO) {
+                HeatMapRealmManager.createArrayOfMarkers(false)
+                Log.d(TAG, "runBackgroundPressed: GettingArray")
             }
 
-            val job2: Job = launch(context = Dispatchers.Main) {
-                blocker.showWithText("Loading")
-                Log.d(TAG, "runBackgroundPressed: ActivityBlockedPlaced")
-            }
-            joinAll(job1, job2)
+            val result = task.await()
             calcNearestRoad()
             blocker.remove()
             Log.d(TAG, "runBackgroundPressed: ActivityBlockedRemoved")
         }
-
-
-
-
-
     }
 
 
